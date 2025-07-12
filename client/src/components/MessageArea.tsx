@@ -1,5 +1,29 @@
 import React from 'react';
 
+interface SearchInfo {
+  stages: string[]; // 'searching', 'reading', 'writing', 'error'
+  query: string;
+  urls: string[] | string;
+  error?: string;
+}
+
+interface Message {
+  id: number;
+  content: string;
+  isUser: boolean;
+  type: string;
+  isLoading?: boolean;
+  searchInfo?: SearchInfo;
+}
+
+interface SearchStagesProps {
+  searchInfo: SearchInfo;
+}
+
+interface MessageAreaProps {
+  messages: Message[];
+}
+
 const PremiumTypingAnimation = () => {
     return (
         <div className="flex items-center">
@@ -15,7 +39,7 @@ const PremiumTypingAnimation = () => {
     );
 };
 
-const SearchStages = ({ searchInfo }) => {
+const SearchStages = ({ searchInfo }: SearchStagesProps) => {
     if (!searchInfo || !searchInfo.stages || searchInfo.stages.length === 0) return null;
 
     return (
@@ -59,13 +83,13 @@ const SearchStages = ({ searchInfo }) => {
                             <span className="font-medium mb-2 ml-2">Reading</span>
 
                             {/* Search Results */}
-                            {searchInfo.urls && searchInfo.urls.length > 0 && (
+                            {searchInfo.urls && (
                                 <div className="pl-2 space-y-1">
                                     <div className="flex flex-wrap gap-2">
                                         {Array.isArray(searchInfo.urls) ? (
-                                            searchInfo.urls.map((url, index) => (
+                                            searchInfo.urls.length > 0 && searchInfo.urls.map((url, index) => (
                                                 <div key={index} className="bg-gray-100 text-xs px-3 py-1.5 rounded border border-gray-200 truncate max-w-[200px] transition-all duration-200 hover:bg-gray-50">
-                                                    {typeof url === 'string' ? url : JSON.stringify(url).substring(0, 30)}
+                                                    {typeof url === 'string' ? url.substring(0, 30) : JSON.stringify(url).substring(0, 30)}
                                                 </div>
                                             ))
                                         ) : (
@@ -105,7 +129,7 @@ const SearchStages = ({ searchInfo }) => {
     );
 };
 
-const MessageArea = ({ messages }) => {
+const MessageArea = ({ messages }: MessageAreaProps) => {
     return (
         <div className="flex-grow overflow-y-auto bg-[#FCFCF8] border-b border-gray-100" style={{ minHeight: 0 }}>
             <div className="max-w-4xl mx-auto p-6">
